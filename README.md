@@ -1,6 +1,6 @@
 # cxpect
 
-![C11+](https://img.shields.io/badge/C-C11%2B-00599C?logo=c&logoColor=white)
+![C11](https://img.shields.io/badge/C-C11-00599C?logo=c&logoColor=white)
 ![Single header](https://img.shields.io/badge/distribution-single--header-6f42c1)
 ![Dependencies](https://img.shields.io/badge/dependencies-none-2ea44f)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
