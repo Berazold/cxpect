@@ -418,6 +418,32 @@ Assertion failures use `setjmp`/`longjmp` to leave the current `it` block and co
 
 Place essential cleanup in `after_each`, or release resources before an assertion that may fail. Do not rely on returning through intermediate stack frames after a failed assertion.
 
+## Testing cxpect
+
+The repository includes tests for the public API, expected failures, custom dispatch, random replay and ULP policies.
+
+Testing is orchestrated via a unified Perl script that handles building and running both positive tests and negative (expected failure) test suites.
+
+Run the tests with the default compiler (clang) and strict 'warnings as errors':
+
+```console
+$ perl scripts/test_all.pl
+```
+
+You can target specific compilers and enable UBSan(UndefinedBehaviorSanitizer) where available:
+
+```console
+$ perl scripts/test_all.pl --compiler=gcc --ubsan
+$ perl scripts/test_all.pl --compiler=msvc
+$ perl scripts/test_all.pl --compiler=clang-cl --ubsan
+```
+
+The test runner also supports generating modern reports for CI/CD pipelines or local viewing:
+
+```console
+$ perl scripts/test_all.pl --junit=report.xml --html=report.html
+```
+
 ## Project status and portability
 
 cxpect is intentionally small and has no build-system dependency. The repository targets GCC and Clang. Ports to other compilers should provide `cxpect_typeof` when neither C23 `typeof` nor `__typeof__` is available.
