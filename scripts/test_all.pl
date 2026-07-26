@@ -6,7 +6,7 @@ use FindBin;
 use File::Spec::Functions qw(catfile);
 
 my ($compiler, $ubsan, $fail_fast, $seed, $junit, $html, $help, $silent);
-my $src_dir = "src";
+my $src_dir = "tests";
 my $pos_dir = "build_pos";
 my $neg_dir = "build_neg";
 

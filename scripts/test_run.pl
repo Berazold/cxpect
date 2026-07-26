@@ -58,9 +58,9 @@ foreach my $t (@tests) {
     my $output = "";
 
     if ($silent) {
-        system($t->{path});
-    } else {
         $output = `$t->{path} 2>&1`;
+    } else {
+        system($t->{path});
     }
 
     my $status = $?;
