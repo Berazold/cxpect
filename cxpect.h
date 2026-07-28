@@ -595,7 +595,7 @@ cxpect_math_float_equals(const float left, const float right)
 
 	const uint32_t dist_ok = (dist <= 1);
 	const uint32_t eps_ok = (diff <= cxpect_math_comparison_eps5_bits.f);
-	const uint32_t normal_match = (!diff_sign) & (dist_ok | eps_ok);
+	const uint32_t normal_match = eps_ok | ((!diff_sign) & dist_ok);
 
 	return (both_zero | nan_match | ((!any_nan) & ((any_inf & exact) | ((!any_inf) & normal_match)))) != 0u;
 }
@@ -684,8 +684,8 @@ cxpect_math_double_equals(const double left, const double right)
 
 	const uint64_t dist_ok = (dist <= 1);
 	const uint64_t eps_ok = (diff <= cxpect_math_double_comparison_eps9_bits.d);
+	const uint64_t normal_match = eps_ok | ((!diff_sign) & dist_ok);
 
-	const uint64_t normal_match = (!diff_sign) & (dist_ok | eps_ok);
 	return (both_zero | nan_match | ((!any_nan) & ((any_inf & exact) | ((!any_inf) & normal_match)))) != 0ul;
 }
 #else
