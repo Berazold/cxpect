@@ -411,6 +411,10 @@ cxpect_ctx_post_init(cxpect_ctx_t* ctx);
 		cxpect_default_ctx->fault_env = cxpect_internal_previous_env;                                                  \
 		if (cxpect_internal_failed)                                                                                    \
 		{                                                                                                              \
+			(void) fprintf(stdout,                                                                                     \
+				"%s✗ FAILED%s\n",                                                                                      \
+				cxpect_get_terminal_color(CxpectTerminalColorsRed),                                                    \
+				cxpect_get_terminal_color(CxpectTerminalColorsClear));                                                 \
 			cxpect_default_ctx->tests_failed++;                                                                        \
 		}                                                                                                              \
 		else                                                                                                           \
