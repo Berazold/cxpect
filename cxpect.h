@@ -119,12 +119,16 @@ cxpect_get_terminal_color(CxpectTerminalColor color)
 	#endif
 #endif
 
+#ifndef cxpect_default_ctx
+	#define cxpect_default_ctx cxpect_default_ctx
+#endif
+
 #define cxpect_fail                                                                                                    \
 	do                                                                                                                 \
 	{                                                                                                                  \
-		if (ctx->fault_env)                                                                                            \
+		if (cxpect_default_ctx->fault_env)                                                                             \
 		{                                                                                                              \
-			longjmp(*ctx->fault_env, 1);                                                                               \
+			longjmp(*cxpect_default_ctx->fault_env, 1);                                                                \
 		}                                                                                                              \
 		else                                                                                                           \
 		{                                                                                                              \
@@ -339,20 +343,20 @@ cxpect_ctx_post_init(cxpect_ctx_t* ctx);
 #define cxpect_before_each(fn)                                                                                         \
 	do                                                                                                                 \
 	{                                                                                                                  \
-		ctx->before_each_cb = fn;                                                                                      \
+		cxpect_default_ctx->before_each_cb = fn;                                                                       \
 	} while (0)
 
 #define cxpect_after_each(fn)                                                                                          \
 	do                                                                                                                 \
 	{                                                                                                                  \
-		ctx->after_each_cb = fn;                                                                                       \
+		cxpect_default_ctx->after_each_cb = fn;                                                                        \
 	} while (0)
 
 #define cxpect_clear_hooks()                                                                                           \
 	do                                                                                                                 \
 	{                                                                                                                  \
-		ctx->before_each_cb = NULL;                                                                                    \
-		ctx->after_each_cb = NULL;                                                                                     \
+		cxpect_default_ctx->before_each_cb = NULL;                                                                     \
+		cxpect_default_ctx->after_each_cb = NULL;                                                                      \
 	} while (0)
 
 #define cxpect_describe(name, ...)                                                                                     \
@@ -375,16 +379,16 @@ cxpect_ctx_post_init(cxpect_ctx_t* ctx);
 		volatile bool cxpect_internal_failed = false;                                                                  \
 		jmp_buf cxpect_internal_test_env;                                                                              \
 		jmp_buf cxpect_internal_after_env;                                                                             \
-		jmp_buf* const cxpect_internal_previous_env = ctx->fault_env;                                                  \
+		jmp_buf* const cxpect_internal_previous_env = cxpect_default_ctx->fault_env;                                   \
 		const char* const cxpect_internal_test_name = (name);                                                          \
 		(void) fprintf(                                                                                                \
 			stdout, "    [IT] %-45s ", cxpect_internal_test_name != NULL ? cxpect_internal_test_name : "(unnamed)");   \
-		ctx->fault_env = &cxpect_internal_test_env;                                                                    \
+		cxpect_default_ctx->fault_env = &cxpect_internal_test_env;                                                     \
 		if (setjmp(cxpect_internal_test_env) == 0)                                                                     \
 		{                                                                                                              \
-			if (ctx->before_each_cb != NULL)                                                                           \
+			if (cxpect_default_ctx->before_each_cb != NULL)                                                            \
 			{                                                                                                          \
-				ctx->before_each_cb(ctx);                                                                              \
+				cxpect_default_ctx->before_each_cb(cxpect_default_ctx);                                                \
 			}                                                                                                          \
 			__VA_ARGS__                                                                                                \
 		}                                                                                                              \
@@ -392,22 +396,22 @@ cxpect_ctx_post_init(cxpect_ctx_t* ctx);
 		{                                                                                                              \
 			cxpect_internal_failed = true;                                                                             \
 		}                                                                                                              \
-		if (ctx->after_each_cb != NULL)                                                                                \
+		if (cxpect_default_ctx->after_each_cb != NULL)                                                                 \
 		{                                                                                                              \
-			ctx->fault_env = &cxpect_internal_after_env;                                                               \
+			cxpect_default_ctx->fault_env = &cxpect_internal_after_env;                                                \
 			if (setjmp(cxpect_internal_after_env) == 0)                                                                \
 			{                                                                                                          \
-				ctx->after_each_cb(ctx);                                                                               \
+				cxpect_default_ctx->after_each_cb(cxpect_default_ctx);                                                 \
 			}                                                                                                          \
 			else                                                                                                       \
 			{                                                                                                          \
 				cxpect_internal_failed = true;                                                                         \
 			}                                                                                                          \
 		}                                                                                                              \
-		ctx->fault_env = cxpect_internal_previous_env;                                                                 \
+		cxpect_default_ctx->fault_env = cxpect_internal_previous_env;                                                  \
 		if (cxpect_internal_failed)                                                                                    \
 		{                                                                                                              \
-			ctx->tests_failed++;                                                                                       \
+			cxpect_default_ctx->tests_failed++;                                                                        \
 		}                                                                                                              \
 		else                                                                                                           \
 		{                                                                                                              \
@@ -415,7 +419,7 @@ cxpect_ctx_post_init(cxpect_ctx_t* ctx);
 				"%s✓ OK%s\n",                                                                                          \
 				cxpect_get_terminal_color(CxpectTerminalColorsGreen),                                                  \
 				cxpect_get_terminal_color(CxpectTerminalColorsClear));                                                 \
-			ctx->tests_passed++;                                                                                       \
+			cxpect_default_ctx->tests_passed++;                                                                        \
 		}                                                                                                              \
 	} while (false)
 
@@ -428,26 +432,26 @@ cxpect_ctx_post_init(cxpect_ctx_t* ctx);
 		{NULL, NULL},                                                                                                  \
 	})
 
-#define CXPECT_TEST(name) static void name(cxpect_ctx_t* ctx)
+#define CXPECT_TEST(name) static void name(cxpect_ctx_t* cxpect_default_ctx)
 
-#define CXPECT_RUN(ctx, ...)                                                                                           \
+#define CXPECT_RUN(cxpect_run_ctx, ...)                                                                                \
 	do                                                                                                                 \
 	{                                                                                                                  \
 		const cxpect_case_t cxpect_cases[] = {__VA_ARGS__, {NULL, NULL}};                                              \
-		cxpect_run_tests(ctx, cxpect_cases);                                                                           \
+		cxpect_run_tests(cxpect_run_ctx, cxpect_cases);                                                                \
 	} while (0)
 
 #define CXPECT_MAIN(...)                                                                                               \
 	int main(int argc, char** argv)                                                                                    \
 	{                                                                                                                  \
-		cxpect_ctx_t ctx = {                                                                                           \
+		cxpect_ctx_t cxpect_default_ctx = {                                                                            \
 			.argc = (int64_t) argc,                                                                                    \
 			.argv = argv,                                                                                              \
 			.filter = argc > 1 ? argv[1] : NULL,                                                                       \
 		};                                                                                                             \
-		cxpect_ctx_post_init(&ctx);                                                                                    \
-		CXPECT_RUN(&ctx, __VA_ARGS__);                                                                                 \
-		return ctx.tests_failed == 0 ? EXIT_SUCCESS : EXIT_FAILURE;                                                    \
+		cxpect_ctx_post_init(&cxpect_default_ctx);                                                                     \
+		CXPECT_RUN(&cxpect_default_ctx, __VA_ARGS__);                                                                  \
+		return cxpect_default_ctx.tests_failed == 0 ? EXIT_SUCCESS : EXIT_FAILURE;                                     \
 	}
 
 // float comparison
@@ -1310,8 +1314,11 @@ cxpect_finish_match(cxpect_ctx_t* ctx, bool done, const char* file, int line, co
 #define cxpect_expect_match(subject_)                                                                                  \
 	for (cxpect_match_state_t cxpect_internal_match_state = {false, true}; cxpect_internal_match_state.once;           \
 		cxpect_internal_match_state.once = false,                                                                      \
-							  cxpect_finish_match(                                                                     \
-								  ctx, cxpect_internal_match_state.done, __FILE__, __LINE__, #subject_))               \
+							  cxpect_finish_match(cxpect_default_ctx,                                                  \
+								  cxpect_internal_match_state.done,                                                    \
+								  __FILE__,                                                                            \
+								  __LINE__,                                                                            \
+								  #subject_))                                                                          \
 		for (cxpect_typeof(false ? (subject_) : (subject_))                                                            \
 				 cxpect_internal_match_subject = (subject_),                                                           \
 				 *cxpect_internal_match_subject_once = &cxpect_internal_match_subject;                                 \
@@ -1321,8 +1328,11 @@ cxpect_finish_match(cxpect_ctx_t* ctx, bool done, const char* file, int line, co
 #define cxpect_expect_match_as(subject_, name_)                                                                        \
 	for (cxpect_match_state_t cxpect_internal_match_state = {false, true}; cxpect_internal_match_state.once;           \
 		cxpect_internal_match_state.once = false,                                                                      \
-							  cxpect_finish_match(                                                                     \
-								  ctx, cxpect_internal_match_state.done, __FILE__, __LINE__, #subject_))               \
+							  cxpect_finish_match(cxpect_default_ctx,                                                  \
+								  cxpect_internal_match_state.done,                                                    \
+								  __FILE__,                                                                            \
+								  __LINE__,                                                                            \
+								  #subject_))                                                                          \
 		for (cxpect_typeof(false ? (subject_) : (subject_)) name_ = (subject_),                                        \
 															cxpect_internal_match_subject = name_,                     \
 															*cxpect_internal_match_subject_once = &(name_);            \

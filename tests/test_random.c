@@ -22,16 +22,16 @@ CXPECT_TEST(random_api)
 
 		it(
 			"keeps every bounded generator inside inclusive limits", for (int index = 0; index < 2048; ++index) {
-				const int8_t i8 = cxpect_rnd_range_i8(ctx, INT8_C(-7), INT8_C(5));
-				const uint8_t u8 = cxpect_rnd_range_u8(ctx, UINT8_C(9), UINT8_C(3));
-				const int16_t i16 = cxpect_rnd_range_i16(ctx, INT16_C(-500), INT16_C(700));
-				const uint16_t u16 = cxpect_rnd_range_u16(ctx, UINT16_C(1000), UINT16_C(20));
-				const int32_t i32 = cxpect_rnd_range_i32(ctx, INT32_MIN, INT32_MAX);
-				const uint32_t u32 = cxpect_rnd_range_u32(ctx, UINT32_C(100), UINT32_C(200));
-				const int64_t i64 = cxpect_rnd_range_i64(ctx, INT64_MIN, INT64_MAX);
-				const uint64_t u64 = cxpect_rnd_range_u64(ctx, UINT64_C(900), UINT64_C(100));
-				const float f32 = cxpect_rnd_range_float(ctx, -10.0f, 20.0f);
-				const double f64 = cxpect_rnd_range_double(ctx, 50.0, -25.0);
+				const int8_t i8 = cxpect_rnd_range_i8(cxpect_default_ctx, INT8_C(-7), INT8_C(5));
+				const uint8_t u8 = cxpect_rnd_range_u8(cxpect_default_ctx, UINT8_C(9), UINT8_C(3));
+				const int16_t i16 = cxpect_rnd_range_i16(cxpect_default_ctx, INT16_C(-500), INT16_C(700));
+				const uint16_t u16 = cxpect_rnd_range_u16(cxpect_default_ctx, UINT16_C(1000), UINT16_C(20));
+				const int32_t i32 = cxpect_rnd_range_i32(cxpect_default_ctx, INT32_MIN, INT32_MAX);
+				const uint32_t u32 = cxpect_rnd_range_u32(cxpect_default_ctx, UINT32_C(100), UINT32_C(200));
+				const int64_t i64 = cxpect_rnd_range_i64(cxpect_default_ctx, INT64_MIN, INT64_MAX);
+				const uint64_t u64 = cxpect_rnd_range_u64(cxpect_default_ctx, UINT64_C(900), UINT64_C(100));
+				const float f32 = cxpect_rnd_range_float(cxpect_default_ctx, -10.0f, 20.0f);
+				const double f64 = cxpect_rnd_range_double(cxpect_default_ctx, 50.0, -25.0);
 
 				expect_ge(i8, INT8_C(-7));
 				expect_le(i8, INT8_C(5));

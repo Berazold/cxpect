@@ -80,7 +80,7 @@ CXPECT_TEST(customization)
 			expect_eq(first, same);
 			expect_neq(first, smaller);
 			expect_gt(first, smaller);
-			expect_eq(ctx->custom_hook_calls, 1u););
+			expect_eq(cxpect_default_ctx->custom_hook_calls, 1u););
 
 		it(
 			"dispatches a custom formatter", const point value = {.x = 4, .y = 8}; char buffer[64] = {0};
@@ -104,7 +104,7 @@ CXPECT_TEST(customization)
 			expect_neq(read_result, NULL);
 			expect_eq(buffer, "point(4,8)");
 			expect_eq(close_result, 0);
-			expect_eq(ctx->custom_hook_calls, 2u);););
+			expect_eq(cxpect_default_ctx->custom_hook_calls, 2u);););
 
 	clear_hooks();
 }

@@ -4,9 +4,10 @@
 static unsigned after_calls;
 
 static void
-failing_after(cxpect_ctx_t* ctx)
+failing_after(cxpect_ctx_t* cxpect_default_ctx)
 {
 	++after_calls;
+	(void) cxpect_default_ctx;
 	expect_eq(after_calls, 0u, "intentional after_each failure");
 }
 

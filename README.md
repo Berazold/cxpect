@@ -307,7 +307,7 @@ Enable the random API before including the implementation:
 it("generates bounded values",
     for (int index = 0; index < 1000; ++index)
     {
-        const int value = cxpect_rnd_range_i32(ctx, -10, 10);
+        const int value = cxpect_rnd_range_i32(cxpect_default_ctx, -10, 10);
         expect_ge(value, -10);
         expect_le(value, 10);
     }
